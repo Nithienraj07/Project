@@ -2,96 +2,137 @@
 using namespace std;
 
 class BankAccount {
-    private:
-        int accountNumber;
-        double balance;
+private:
+    int accountNumber;
+    double balance;
 
-    public:
+public:
+    BankAccount(int accNo, double initialBalance) {
+        accountNumber = accNo;
+        balance = initialBalance;
+    }
 
-        BankAccount(int accNo, double initialBalance) {
-            accountNumber = accNo;
-            balance = initialBalance;
+    int getAccountNumber() {
+        return accountNumber;
+    }
+
+    void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+            cout << "Deposited successfully!" << endl;
+        } else {
+            cout << "Invalid amount!"<< endl;
         }
+    }
 
- 
-        void deposit(double amount) {
-            if (amount > 0) {
-                balance += amount;
-                cout << "Deposited successfully!" << endl;
-            } else {
-                cout << "Invalid amount!" << endl;
-            }
+    void withdraw(double amount) {
+        if (amount > balance) {
+            cout << "Insufficient balance!"<<endl;
         }
+        else if (amount <= 0) {
+            cout << "Invalid amount!"<<endl;
+        }
+        else {
+            balance -= amount;
+            cout << "Withdrawal successful!"<<endl;
+        }
+    }
 
-    
-        void withdraw(double amount) {
-            if (amount > balance) {
-                cout << "Insufficient balance!" << endl;
-            } 
-            else if (amount <= 0) {
-            cout << "Invalid amount!" << endl;
-            }
-            else {
-                balance -= amount;
-                cout << "Withdrawal successful!" << endl;
-            }
-        }
-
-    
-        void displayBalance() {
-            cout << "Current Balance: " << balance << endl;
-        }
+    void displayBalance() {
+        cout << "Current Balance: " << balance << endl;
+    }
 };
 
 int main() {
-    int accNo;
-    double initialBalance;
 
-    cout << "Enter account number: ";
-    cin >> accNo;
-
-    cout << "Enter initial balance: ";
-    cin >> initialBalance;
-
-    BankAccount account(accNo, initialBalance);
-
-    int choice;
-    double amount;
+    BankAccount *account = NULL;
+    int mainChoice;
 
     do {
-        cout << "\n1. Deposit" << endl;
-        cout << "2. Withdraw" << endl; 
-        cout << "3. Check Balance" << endl;
-        cout << "4. Exit\n";
-        cout << "Choose option: ";
-        cin >> choice;
+        cout << "    MAIN MENU   " << endl;
+        cout << "1. Create Account" << endl;
+        cout << "2. Existing Customer" << endl;
+        cout << "3. Exit" << endl;
+        cout << "Enter choice: ";
+        cin >> mainChoice;
 
-        switch (choice) {
-            case 1:
-                cout << "Enter amount: ";
-                cin >> amount;
-                account.deposit(amount);
-                break;
+        if (mainChoice == 1) {
 
-            case 2:
-                cout << "Enter amount: ";
-                cin >> amount;
-                account.withdraw(amount);
-                break;
+            int accNo;
+            double initialBalance;
 
-            case 3:
-                account.displayBalance();
-                break;
+            cout << "Enter account number: ";
+            cin >> accNo;
 
-            case 4:
-                cout << "Thank you for using ATM!" << endl;
-                break;
+            cout << "Enter initial amount: ";
+            cin >> initialBalance;
 
-            default:
-                cout << "Invalid choice!" << endl;
+            account = new BankAccount(accNo, initialBalance);
+
+            cout << "Account created successfully!" << endl;
+
         }
 
-    } while (choice != 4);
+        else if (mainChoice == 2) {
+
+            if (account == NULL) {
+                cout << "No account found! Please create account first." << endl;
+                continue;
+            }
+
+            int accNo;
+            cout << "Enter account number: ";
+            cin >> accNo;
+
+            if (accNo != account->getAccountNumber()) {
+                cout << "Invalid account number!" << endl;
+                continue;
+            }
+
+            int choice;
+            double amount;
+
+            do {
+                cout << " TRANSACTION MENU "<<endl;
+                cout << "1. Deposit" << endl;
+                cout << "2. Withdraw" << endl;
+                cout << "3. Check Balance" << endl;
+                cout << "4. Exit" << endl;
+                cout << "Choose option: ";
+                cin >> choice;
+
+                switch (choice) {
+
+                case 1:
+                    cout << "Enter amount: ";
+                    cin >> amount;
+                    account->deposit(amount);
+                    break;
+
+                case 2:
+                    cout << "Enter amount: ";
+                    cin >> amount;
+                    account->withdraw(amount);
+                    break;
+
+                case 3:
+                    account->displayBalance();
+                    break;
+
+                case 4:
+                    cout << "Exiting transaction menu." << endl;
+                    break;
+
+                default:
+                    cout << "Invalid choice!" << endl;
+                }
+
+            } while (choice != 4);
+        }
+
+    } while (mainChoice != 3);
+
+    cout << "Thank you for using ATM!\n";
 
     return 0;
 }
